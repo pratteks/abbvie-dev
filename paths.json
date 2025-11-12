@@ -2,13 +2,9 @@
   "mappings": [
     "/content/abbvie-dev/:/",
     "/content/abbvie-dev/configuration:/.helix/config.json",
-    "/content/abbvie-dev/metadata:/metadata.json",
-    "/content/abbvie-qa/:/",
-    "/content/abbvie-qa/configuration:/.helix/config.json",
-    "/content/abbvie-qa/metadata:/metadata.json"
+    "/content/abbvie-dev/metadata:/metadata.json"
   ],
   "includes": [
-    "/content/abbvie-dev/",
-     "/content/abbvie-qa/"
+    "/content/abbvie-dev/"
   ]
 }
