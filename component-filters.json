@@ -15,7 +15,8 @@
       "hero",
       "cards",
       "columns",
-      "fragment"
+      "fragment",
+      "slider"
     ]
   },
   {
@@ -29,6 +30,10 @@
     "components": [
       "column"
     ]
+  },
+  {
+    "id": "slider",
+    "components": ["learning-slide", "marketing-slide"]
   },
   {
     "id": "column",

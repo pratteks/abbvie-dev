@@ -214,5 +214,78 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "learning-slide",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "learningId",
+        "label": "'Learning ID",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "viewCourseButtonText",
+        "label": "'View Course' Button Label",
+        "value": "View Course"
+      },
+       {
+        "component": "almLoPicker",
+        "valueType": "string",
+        "name": "learningObjectId",
+        "label": "Learning Object",
+        "description": "Select a learning object from the catalog"
+      }
+    ]
+  },
+  {
+    "id": "marketing-slide",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "valueType": "string",
+        "label": "Description",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Link"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLabel",
+        "label": "CTA Label",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Alt Text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "viewCourseButtonText",
+        "label": "'View Course' Button Label",
+        "value": "View Course"
+      }  
+    ]
   }
 ]
