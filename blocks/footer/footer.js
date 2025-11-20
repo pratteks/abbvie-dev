@@ -1,81 +1,101 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
+/**
+ * Footer Fragment Block Renderer
+ */
 export default async function decorate(block) {
-  // Load fragment path from <meta name="footer">
+  // Read footer="" metadata
   const footerMeta = getMetadata('footer');
-  const footerPath = footerMeta
-    ? new URL(footerMeta, window.location).pathname
-    : '/footer';
+  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
 
+  // Load the fragment HTML
   const fragment = await loadFragment(footerPath);
 
-  // --- Extract columns section ---
-  const columnsSection = fragment.querySelector('.columns-wrapper .columns');
-  const columns = columnsSection?.querySelector('div')?.children || [];
+  // ---- Extract sections from fragment -------------------------
 
-  const brand = columns[0]?.querySelector('p')?.textContent?.trim() || '';
+  // 1️⃣ Columns section (<div class="columns block columns-4-cols">)
+  const columnsBlock = fragment.querySelector('.columns.block');
+  const columnCells = [...columnsBlock.querySelectorAll(':scope > div > div')];
 
-  const col1 = columns[0]?.children[1];
-  const col2 = columns[0]?.children[2];
-  const col3 = columns[0]?.children[3];
+  const brandCell = columnCells[0];
+  const col1Cell  = columnCells[1];
+  const col2Cell  = columnCells[2];
+  const col3Cell  = columnCells[3];
 
-  const legalTextEls = col3?.querySelectorAll('p') || [];
+  // Extract legal paragraphs (found inside col3)
+  const legalParas = col3Cell.querySelectorAll('p:not(.button-container):not(:has(a))');
 
-  const legalMain = legalTextEls[legalTextEls.length - 2]?.outerHTML || '';
-  const copyright = legalTextEls[legalTextEls.length - 1]?.outerHTML || '';
+  // 2️⃣ Legal links section (bottom)
+  const legalWrapper = fragment.querySelector('.default-content-wrapper');
+  const legalLinksUl = legalWrapper.querySelector('ul');
+  const privacyLink  = legalWrapper.querySelector('p a');
 
-  // --- Extract bottom links section ---
-  const bottomSection = fragment.querySelector('.default-content-wrapper');
-  const linkList = bottomSection?.querySelector('ul');
-  const privacyChoiceBtn = bottomSection?.querySelector('.button-container');
+  // ---- Build final footer DOM --------------------------------
 
-  // Build footer DOM
   const footer = document.createElement('footer');
   footer.classList.add('footer');
 
-  /* ----------------------
-     Top Section
-  ---------------------- */
+  // Top grid
   const top = document.createElement('div');
   top.classList.add('footer-top');
 
-  const brandDiv = document.createElement('div');
-  brandDiv.classList.add('footer-brand');
-  brandDiv.textContent = brand;
+  // Brand
+  const brand = document.createElement('div');
+  brand.classList.add('footer-brand');
+  brand.textContent = brandCell.innerText.trim();
 
-  const colWrapper = document.createElement('div');
-  colWrapper.classList.add('footer-columns');
+  // Columns wrapper
+  const columns = document.createElement('div');
+  columns.classList.add('footer-columns');
 
-  [col1, col2, col3].forEach((col) => {
-    const c = document.createElement('div');
-    c.classList.add('footer-col');
-    c.innerHTML = col?.innerHTML || '';
-    colWrapper.append(c);
-  });
+  // Helper: convert a <div> group into a real column
+  const makeColumn = (cell) => {
+    const col = document.createElement('div');
+    col.classList.add('footer-col');
 
-  top.append(brandDiv, colWrapper);
+    // Copy all inner HTML INCLUDING links
+    col.innerHTML = cell.innerHTML;
 
-  /* ----------------------
-     Bottom Section
-  ---------------------- */
+    return col;
+  };
+
+  columns.append(
+    makeColumn(col1Cell),
+    makeColumn(col2Cell),
+    makeColumn(col3Cell)
+  );
+
+  top.append(brand, columns);
+
+  // Bottom legal wrapper
   const bottom = document.createElement('div');
   bottom.classList.add('footer-bottom');
 
-  const linksDiv = document.createElement('div');
-  linksDiv.classList.add('footer-links');
-  linksDiv.innerHTML = linkList?.outerHTML || '';
-
-  const privacyDiv = document.createElement('div');
-  privacyDiv.classList.add('footer-privacy-btn');
-  privacyDiv.innerHTML = privacyChoiceBtn?.outerHTML || '';
-
+  // Legal paragraphs
   const legalDiv = document.createElement('div');
   legalDiv.classList.add('footer-legal');
-  legalDiv.innerHTML = legalMain + copyright;
 
-  bottom.append(linksDiv, privacyDiv, legalDiv);
+  legalParas.forEach(p => {
+    const np = document.createElement('p');
+    np.innerHTML = p.innerHTML;
+    legalDiv.append(np);
+  });
 
-  // Replace original block with assembled HTML
+  // Legal links
+  const legalLinksDiv = document.createElement('div');
+  legalLinksDiv.classList.add('footer-legal-links');
+  legalLinksDiv.innerHTML = legalLinksUl.outerHTML;
+
+  // Privacy
+  const privacyDiv = document.createElement('div');
+  privacyDiv.classList.add('footer-privacy');
+  privacyDiv.innerHTML = `<a href="${privacyLink.href}">${privacyLink.textContent}</a>`;
+
+  bottom.append(legalDiv, legalLinksDiv, privacyDiv);
+
+  // Replace block content with the fully constructed footer
   block.replaceWith(footer);
+
+  footer.append(top, bottom);
 }
