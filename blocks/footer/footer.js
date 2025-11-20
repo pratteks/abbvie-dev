@@ -1,58 +1,85 @@
 import { getMetadata } from '../../scripts/aem.js';
+
 import { loadFragment } from '../fragment/fragment.js';
 
 export default async function decorate(block) {
-  // Load fragment based on metadata
-  const footerMeta = getMetadata('footer');
-  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
+  // load footer fragment
+  const footerPath = '/footer'; // or metadata-driven if needed
   const fragment = await loadFragment(footerPath);
 
-  // Extract DOM parts
-  const columnsContainer = fragment.querySelector('.columns-container');
-  if (!columnsContainer) return;
+  // extract the main block root inside fragment
+  const section = fragment.querySelector('.section');
+  if (!section) return;
 
-  const columns = columnsContainer.querySelector('.columns.block');
-  const row = columns?.querySelector('div');
-  const bottom = fragment.querySelector('.default-content-wrapper');
+  const columnsWrapper = section.querySelector('.columns-wrapper .columns > div');
+  const bottomWrapper = section.querySelector('.default-content-wrapper');
 
-  if (!row || !bottom) return;
+  if (!columnsWrapper) return;
 
-  const cols = [...row.children];
+  const cols = [...columnsWrapper.children];
 
-  const brand = cols[0]?.innerHTML || '';
-  const col1 = cols[1]?.innerHTML || '';
-  const col2 = cols[2]?.innerHTML || '';
-  const col3 = cols[3]?.innerHTML || '';
+  // Expected HTML:
+  // col[0] = brand
+  // col[1], col[2], col[3] = link groups
+  const brandCol = cols[0];
+  const col1 = cols[1];
+  const col2 = cols[2];
+  const col3 = cols[3];
 
-  const bottomLinks = bottom.querySelector('ul')?.innerHTML || '';
-  const privacy = bottom.querySelector('p')?.innerHTML || '';
-
-  // Build footer
+  // Build final footer structure
   const footer = document.createElement('footer');
-  footer.classList.add('footer');
+  footer.classList.add('abbvie-footer');
 
-  footer.innerHTML = `
-    <div class="footer-top">
-      <div class="footer-brand">
-        ${brand}
-      </div>
-      <div class="footer-columns">
-        <div class="footer-col">${col1}</div>
-        <div class="footer-col">${col2}</div>
-        <div class="footer-col">${col3}</div>
-      </div>
-    </div>
+  /* -------------------------------
+     TOP SECTION
+  -------------------------------- */
+  const top = document.createElement('div');
+  top.classList.add('footer-top');
 
-    <div class="footer-bottom">
-      <ul class="footer-links">
-        ${bottomLinks}
-      </ul>
-      <div class="footer-privacy">
-        ${privacy}
-      </div>
-    </div>
-  `;
+  const brandDiv = document.createElement('div');
+  brandDiv.classList.add('footer-brand');
+  brandDiv.innerHTML = brandCol.innerHTML;
 
-  // Replace the block
+  const colsContainer = document.createElement('div');
+  colsContainer.classList.add('footer-columns');
+
+  [col1, col2, col3].forEach((c) => {
+    const colDiv = document.createElement('div');
+    colDiv.classList.add('footer-col');
+    colDiv.innerHTML = c.innerHTML;
+    colsContainer.appendChild(colDiv);
+  });
+
+  top.append(brandDiv, colsContainer);
+
+  /* -------------------------------
+     BOTTOM SECTION
+  -------------------------------- */
+  const bottom = document.createElement('div');
+  bottom.classList.add('footer-bottom');
+
+  if (bottomWrapper) {
+    // UL links
+    const ul = bottomWrapper.querySelector('ul');
+    if (ul) {
+      const linkList = document.createElement('div');
+      linkList.classList.add('footer-links');
+      linkList.innerHTML = ul.outerHTML;
+      bottom.append(linkList);
+    }
+
+    // CTA button
+    const button = bottomWrapper.querySelector('.button-container');
+    if (button) {
+      const ctaDiv = document.createElement('div');
+      ctaDiv.classList.add('footer-cta');
+      ctaDiv.innerHTML = button.outerHTML;
+      bottom.append(ctaDiv);
+    }
+  }
+
+  footer.append(top, bottom);
+
+  // replace placeholder block with final footer
   block.replaceWith(footer);
 }

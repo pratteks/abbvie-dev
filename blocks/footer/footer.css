@@ -1,57 +1,75 @@
-.footer {
-  background: #000;
-  color: #fff;
+.abbvie-footer {
   padding: 40px 20px;
-  font-size: 14px;
+  background: #0b0b0b;
+  color: #fff;
+  font-family: var(--body-font, Arial);
 }
 
-.footer a {
+.abbvie-footer a {
   color: #fff;
   text-decoration: none;
 }
 
+.abbvie-footer a:hover {
+  text-decoration: underline;
+}
+
+/* TOP AREA */
 .footer-top {
   display: flex;
-  gap: 40px;
+  flex-direction: row;
   justify-content: space-between;
-  flex-wrap: wrap;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #333;
+  gap: 40px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 40px;
 }
 
 .footer-brand {
-  font-size: 20px;
-  font-weight: bold;
-  margin-right: 40px;
+  font-size: 28px;
+  font-weight: 600;
 }
 
 .footer-columns {
   display: flex;
-  gap: 40px;
-  flex: 1;
+  gap: 50px;
 }
 
 .footer-col p {
   margin: 6px 0;
 }
 
+/* BOTTOM AREA */
 .footer-bottom {
-  margin-top: 30px;
   display: flex;
   justify-content: space-between;
+  padding: 30px 0;
   flex-wrap: wrap;
+  gap: 20px;
 }
 
-.footer-links {
+.footer-links ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.footer-links li {
-  margin: 5px 0;
+.footer-links ul li {
+  margin: 4px 0;
 }
 
-.footer-privacy {
-  margin-top: 10px;
+.footer-cta .button-container a {
+  padding: 8px 14px;
+  border: 1px solid #fff;
+  border-radius: 4px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .footer-top {
+    flex-direction: column;
+  }
+
+  .footer-columns {
+    flex-direction: column;
+  }
 }
