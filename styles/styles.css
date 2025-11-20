@@ -88,10 +88,7 @@ header {
   height: var(--nav-height);
 }
 
-header .header,
-footer .footer {
-  visibility: hidden;
-}
+
 
 header .header[data-block-status="loaded"],
 footer .footer[data-block-status="loaded"] {
