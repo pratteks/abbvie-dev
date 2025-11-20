@@ -31,7 +31,7 @@ export default async function decorate(block) {
   footer.classList.add('abbvie-footer');
 
   /* -------------------------------
-     TOP SECTION
+     TOP SECTION for footer bbbb
   -------------------------------- */
   const top = document.createElement('div');
   top.classList.add('footer-top');
