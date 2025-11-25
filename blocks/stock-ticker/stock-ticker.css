@@ -1,0 +1,22 @@
+.stock-ticker-container {
+  font-family: var(--body-font-family, Arial, sans-serif);
+  font-size: 20px;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 6px;
+}
+
+.stock-ticker-container .label {
+  font-weight: 600;
+  color: #333;
+}
+
+.stock-ticker-container .price {
+  font-weight: bold;
+  font-size: 22px;
+  color: #0072ce; /* AbbVie blue styling */
+}

@@ -23,6 +23,19 @@
       }
     ]
   },
+  
+  {
+    "id": "stock-ticker",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "keywords",
+        "multi": true,
+        "label": "Keywords"
+      }
+    ]
+  },
   {
     "id": "image",
     "fields": [
